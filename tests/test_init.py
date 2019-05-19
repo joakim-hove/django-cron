@@ -1,9 +1,12 @@
-import yaml
+import json
 import os
 import unittest
 
 from .util import *
-from django_cron import init
+from django_cron import Cron
+
+if "DJANGO_SETTINGS_MODULE" in os.environ:
+    del os.environ["DJANGO_SETTINGS_MODULE"]
 
 
 class InitTest(unittest.TestCase):
@@ -13,18 +16,15 @@ class InitTest(unittest.TestCase):
 
 
     def test_init_path(self):
-        if "DJANGO_SETTINGS_MODULE" in os.environ:
-            del os.environ["DJANGO_SETTINGS_MODULE"]
-
         with env_context():
             with self.assertRaises(Exception):
-                init([])
+                Cron([])
 
             with self.assertRaises(Exception):
-                init(["project", "/does/not/exist"])
+                Cron(["project", "/does/not/exist"])
 
             with self.assertRaises(Exception):
-                init(["project", "/does/not/exist"])
+                Cron(["project", "/does/not/exist"])
 
             with tmpd():
                 os.makedirs("project/project")
@@ -35,16 +35,38 @@ class InitTest(unittest.TestCase):
                 with open("project/project/settings.py", "w") as f:
                     pass
 
-                init(["project", "project"])
+                Cron(["project", "project"])
                 self.assertIn("DJANGO_SETTINGS_MODULE", os.environ)
 
-                init(["sleipner", "/home/hove/sleipner/sleipner"])
             with tmpd():
                 os.makedirs("project")
                 with self.assertRaises(Exception):
-                    init(["project", "project"])
+                    Cron(["project", "project"])
 
         self.assertNotIn("DJANGO_SETTINGS_MODULE", os.environ)
+
+
+    def test_init_env(self):
+        with env_context():
+            with tmpd():
+                os.makedirs("project/project")
+
+                with open("project/manage.py","w") as f:
+                    pass
+
+                with open("project/project/settings.py", "w") as f:
+                    pass
+
+                d = {"VAR1" : "Value1",
+                     "VAR2" : "Value2"}
+
+                with open("project/settings.json", "w") as f:
+                    f.write(json.dumps(d))
+
+                Cron(["project", "project"])
+                self.assertEqual(os.environ["VAR1"], "Value1")
+                self.assertEqual(os.environ["VAR2"], "Value2")
+
 
 
 if __name__ == "__main__":
