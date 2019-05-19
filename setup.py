@@ -28,6 +28,7 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     description="Small package to run django manage commands through cron",
+    scripts=["bin/django_cron"],
     install_requires=requirements,
     license="GNU General Public License v3",
     include_package_data=True,
