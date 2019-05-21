@@ -1,6 +1,7 @@
 import json
 import os
 import os.path
+import subprocess
 
 class Cron(object):
     def __init__(self, project, project_root):
@@ -45,7 +46,8 @@ class Cron(object):
         for line in lines:
             cmd = os.path.basename( cmd_file )
             argv = line.split()
-            cmd_list = [ manage_script , cmd ] + argv
+            cmd_list = [ self.manage_script , cmd ] + argv
+            print("Running: {}".format(" ".join(cmd_list)))
             status = subprocess.call( cmd_list )
 
 
@@ -54,7 +56,7 @@ class Cron(object):
         for path in path_list:
             if os.path.isdir(path):
                 for elm in os.listdir(path):
-                    self.run_script(elm)
+                    self.run_script(os.path.join(path, elm))
             elif os.path.isfile(path):
                 self.run_script(path)
             else:
