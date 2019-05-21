@@ -37,7 +37,6 @@ class Cron(object):
 
 
     def run_script(self, cmd_file):
-        cmd_file = os.path.join(self.project_root, cmd_file)
         with open(cmd_file) as f:
             lines = f.readlines()
             if not lines:
@@ -54,10 +53,11 @@ class Cron(object):
 
     def run(self, path_list):
         for path in path_list:
-            if os.path.isdir(path):
-                for elm in os.listdir(path):
+            full_path = os.path.join(self.project_root, path)
+            if os.path.isdir(full_path):
+                for elm in os.listdir(full_path):
                     self.run_script(os.path.join(path, elm))
-            elif os.path.isfile(path):
-                self.run_script(path)
+            elif os.path.isfile(full_path):
+                self.run_script(full_path)
             else:
                 raise IOError("Argument: {} does not correspond to an existing entry".format(path))
