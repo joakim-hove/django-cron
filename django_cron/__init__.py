@@ -56,7 +56,7 @@ class Cron(object):
             full_path = os.path.join(self.project_root, path)
             if os.path.isdir(full_path):
                 for elm in os.listdir(full_path):
-                    self.run_script(os.path.join(path, elm))
+                    self.run_script(os.path.join(full_path, elm))
             elif os.path.isfile(full_path):
                 self.run_script(full_path)
             else:
