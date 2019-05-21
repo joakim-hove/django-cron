@@ -68,6 +68,24 @@ class InitTest(unittest.TestCase):
                 self.assertEqual(os.environ["VAR2"], "Value2")
 
 
+    def test_run(self):
+        with env_context():
+            with tmpd():
+                os.makedirs("project/project")
+
+                with open("project/manage.py","w") as f:
+                    pass
+
+                with open("project/project/settings.py", "w") as f:
+                    pass
+
+                cron = Cron(["project", "project"])
+                with self.assertRaises(IOError):
+                    cron.run(["does/not/exist"])
+
+
+
+
 
 if __name__ == "__main__":
     unittest.main()

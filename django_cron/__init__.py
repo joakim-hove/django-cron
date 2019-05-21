@@ -32,3 +32,30 @@ class Cron(object):
                 os.environ[var] = value
 
         os.environ["DJANGO_SETTINGS_MODULE"] = settings_module
+
+
+
+    def run_script(self, cmd_file):
+        cmd_file = os.path.join(self.project_root, cmd_file)
+        with open(cmd_file) as f:
+            lines = f.readlines()
+            if not lines:
+                lines = [""]
+
+        for line in lines:
+            cmd = os.path.basename( cmd_file )
+            argv = line.split()
+            cmd_list = [ manage_script , cmd ] + argv
+            status = subprocess.call( cmd_list )
+
+
+
+    def run(self, path_list):
+        for path in path_list:
+            if os.path.isdir(path):
+                for elm in os.listdir(path):
+                    self.run_script(elm)
+            elif os.path.isfile(path):
+                self.run_script(path)
+            else:
+                raise IOError("Argument: {} does not correspond to an existing entry".format(path))
