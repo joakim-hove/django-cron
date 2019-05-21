@@ -3,9 +3,9 @@ import os
 import os.path
 
 class Cron(object):
-    def __init__(self, argv):
-        self.project = argv[0]
-        self.project_root = argv[1]
+    def __init__(self, project, project_root):
+        self.project = project
+        self.project_root = project_root
 
         if not os.path.isdir(self.project_root):
             raise Exception("The directory: {} does not exist".format(self.roject_root))

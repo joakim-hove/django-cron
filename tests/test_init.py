@@ -18,13 +18,10 @@ class InitTest(unittest.TestCase):
     def test_init_path(self):
         with env_context():
             with self.assertRaises(Exception):
-                Cron([])
+                Cron("project", "/does/not/exist")
 
             with self.assertRaises(Exception):
-                Cron(["project", "/does/not/exist"])
-
-            with self.assertRaises(Exception):
-                Cron(["project", "/does/not/exist"])
+                Cron("project", "/does/not/exist")
 
             with tmpd():
                 os.makedirs("project/project")
@@ -35,13 +32,13 @@ class InitTest(unittest.TestCase):
                 with open("project/project/settings.py", "w") as f:
                     pass
 
-                Cron(["project", "project"])
+                Cron("project", "project")
                 self.assertIn("DJANGO_SETTINGS_MODULE", os.environ)
 
             with tmpd():
                 os.makedirs("project")
                 with self.assertRaises(Exception):
-                    Cron(["project", "project"])
+                    Cron("project", "project")
 
         self.assertNotIn("DJANGO_SETTINGS_MODULE", os.environ)
 
@@ -63,7 +60,7 @@ class InitTest(unittest.TestCase):
                 with open("project/settings.json", "w") as f:
                     f.write(json.dumps(d))
 
-                Cron(["project", "project"])
+                Cron("project", "project")
                 self.assertEqual(os.environ["VAR1"], "Value1")
                 self.assertEqual(os.environ["VAR2"], "Value2")
 
@@ -79,7 +76,7 @@ class InitTest(unittest.TestCase):
                 with open("project/project/settings.py", "w") as f:
                     pass
 
-                cron = Cron(["project", "project"])
+                cron = Cron("project", "project")
                 with self.assertRaises(IOError):
                     cron.run(["does/not/exist"])
 
