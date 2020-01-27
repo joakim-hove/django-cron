@@ -29,7 +29,7 @@ class Cron(object):
             with open(settings_json) as fileH:
                 env_settings = json.loads( fileH.read() )
 
-            for var,value in env_settings.iteritems():
+            for var,value in env_settings.items():
                 os.environ[var] = value
 
         os.environ["DJANGO_SETTINGS_MODULE"] = settings_module
