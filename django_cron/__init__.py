@@ -9,7 +9,7 @@ class Cron(object):
         self.project_root = project_root
 
         if not os.path.isdir(self.project_root):
-            raise Exception("The directory: {} does not exist".format(self.roject_root))
+            raise Exception("The directory: {} does not exist".format(self.project_root))
 
         self.manage_script = os.path.join(self.project_root, "manage.py")
         if not os.path.isfile(self.manage_script):
